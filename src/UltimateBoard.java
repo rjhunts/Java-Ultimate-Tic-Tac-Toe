@@ -1,70 +1,166 @@
 public class UltimateBoard extends Board {
-    
-    char[][] board = new char[9][9];
-    char winner;
+
+    private Board[] ultBoard = new Board[9];
 
     public UltimateBoard() {
         for (int i = 0; i < 9; i++) {
-            Board b = new Board();
-            board[i] = b.getBoard();
+            Board board = new Board();
+            this.ultBoard[i] = board;
         };
     };
 
-    public void setBoard(int n, char[] b) {
-        board[n] = b;
+    public void setBoard(int n, Board b) {
+        this.ultBoard[n] = b;
     };
 
-    @Override
+    public Board getBlock(int block) {
+        return this.ultBoard[block - 1];
+    };
+
+    // Validate if block is playable
+    public boolean isValid(int block) {
+        if (this.ultBoard[block - 1].checkState() == GameState.WINNER) {
+            return false;
+        };
+
+        for (int i = 0; i < 9; i++) {
+            if (this.ultBoard[block - 1].getCell(i) == ' ') {
+                return true;
+            };
+        };
+        return false;
+    };
+
     public void printBoard() {
-        for (int i = 0; i < 3; i++) {   
-            System.out.println("+---+---+---+" + "    " + "+---+---+---+" + "    " + "+---+---+---+");
-            System.out.println("| " + board[0+3*i][0] + " | " + board[0+3*i][1] + " | " + board[0+3*i][2] + " |" + "    " + "| " + board[1+3*i][0] + " | " + board[1+3*i][1] + " | " + board[1+3*i][2] + " |" + "    " + "| " + board[2+3*i][0] + " | " + board[2+3*i][1] + " | " + board[2+3*i][2] + " |");
-            System.out.println("+---+---+---+" + "    " + "+---+---+---+" + "    " + "+---+---+---+");
-            System.out.println("| " + board[0+3*i][3] + " | " + board[0+3*i][4] + " | " + board[0+3*i][5] + " |" + "    " + "| " + board[1+3*i][3] + " | " + board[1+3*i][4] + " | " + board[1+3*i][5] + " |" + "    " + "| " + board[2+3*i][3] + " | " + board[2+3*i][4] + " | " + board[2+3*i][5] + " |");
-            System.out.println("+---+---+---+" + "    " + "+---+---+---+" + "    " + "+---+---+---+");
-            System.out.println("| " + board[0+3*i][6] + " | " + board[0+3*i][7] + " | " + board[0+3*i][8] + " |" + "    " + "| " + board[1+3*i][6] + " | " + board[1+3*i][7] + " | " + board[1+3*i][8] + " |" + "    " + "| " + board[2+3*i][6] + " | " + board[2+3*i][7] + " | " + board[2+3*i][8] + " |");
-            System.out.println("+---+---+---+" + "    " + "+---+---+---+" + "    " + "+---+---+---+");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("\n+---+---+---+    +---+---+---+    +---+---+---+");
+            System.out.println(this.ultBoard[i * 3].toString(0) + "    " + this.ultBoard[i * 3 + 1].toString(0) + "    " + this.ultBoard[i * 3 + 2].toString(0));
+            System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
+            System.out.println(this.ultBoard[i * 3].toString(3) + "    " + this.ultBoard[i * 3 + 1].toString(3) + "    " + this.ultBoard[i * 3 + 2].toString(3));
+            System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
+            System.out.println(this.ultBoard[i * 3].toString(6) + "    " + this.ultBoard[i * 3 + 1].toString(6) + "    " + this.ultBoard[i * 3 + 2].toString(6));
+            System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
             System.out.println();
         };
     };
     
-    public char checkWin(char[] boardWinners) {
+    private GameState state = GameState.NONE;
+    private Players winner;
 
-        // Check Verical
-        if (boardWinners[0] == boardWinners[1] && boardWinners[0] == boardWinners[2]) {
-            return boardWinners[0];
-        } 
-        
-        else if (boardWinners[3] == boardWinners[4] && boardWinners[3] == boardWinners[5]) {
-            return boardWinners[3];
-        } 
-        
-        else if (boardWinners[6] == boardWinners[7] && boardWinners[6] == boardWinners[8]) {
-            return boardWinners[6];
-        }
+    private void setGame(Players current) {
+        switch (current) {
+            case X:
+                this.winner = Players.X;
+                this.state = GameState.WINNER;
+                break;
+            
+            case O:
+                this.winner = Players.O;
+                this.state = GameState.WINNER;
+                break;
+
+            default:
+                this.winner = Players.NULL;
+                this.state = GameState.TIE;
+                break;
+        };
+    };
+
+    public Players getWinner() {
+        return this.winner;
+    };
+
+    public GameState getState() {
+        return this.state;
+    };
+
+    // Checks games current state
+    public GameState checkState() {
 
         // Check Horizontal
-        else if (boardWinners[0] == boardWinners[3] && boardWinners[0] == boardWinners[6]) {
-            return boardWinners[0];
-        }        
-
-        else if (boardWinners[1] == boardWinners[4] && boardWinners[1] == boardWinners[7]) {
-            return boardWinners[1];
+        if (this.ultBoard[0].checkState() == GameState.WINNER && 
+        this.ultBoard[3].checkState() == GameState.WINNER && 
+        this.ultBoard[6].checkState() == GameState.WINNER 
+        && 
+        this.ultBoard[0].getWinner() == this.ultBoard[3].getWinner() &&
+        this.ultBoard[0].getWinner() == this.ultBoard[6].getWinner()){
+            setGame(this.ultBoard[0].getWinner());
         }
 
-        else if (boardWinners[2] == boardWinners[5] && boardWinners[2] == boardWinners[8]) {
-            return boardWinners[2];
+        else if (this.ultBoard[1].checkState() == GameState.WINNER && 
+        this.ultBoard[4].checkState() == GameState.WINNER && 
+        this.ultBoard[7].checkState() == GameState.WINNER 
+        && 
+        this.ultBoard[1].getWinner() == this.ultBoard[4].getWinner() &&
+        this.ultBoard[1].getWinner() == this.ultBoard[7].getWinner()){
+            setGame(this.ultBoard[1].getWinner());
         }
 
+        else if (this.ultBoard[2].checkState() == GameState.WINNER && 
+        this.ultBoard[5].checkState() == GameState.WINNER && 
+        this.ultBoard[8].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[2].getWinner() == this.ultBoard[5].getWinner() &&
+        this.ultBoard[2].getWinner() == this.ultBoard[8].getWinner()) {
+            setGame(this.ultBoard[2].getWinner());
+        }
+
+        // Check Verical
+        else if (this.ultBoard[0].checkState() == GameState.WINNER && 
+        this.ultBoard[1].checkState() == GameState.WINNER && 
+        this.ultBoard[2].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[0].getWinner() == this.ultBoard[1].getWinner() &&
+        this.ultBoard[0].getWinner() == this.ultBoard[2].getWinner()) {
+            setGame(this.ultBoard[0].getWinner());
+        }
+
+        else if (this.ultBoard[3].checkState() == GameState.WINNER && 
+        this.ultBoard[4].checkState() == GameState.WINNER && 
+        this.ultBoard[5].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[3].getWinner() == this.ultBoard[4].getWinner() &&
+        this.ultBoard[3].getWinner() == this.ultBoard[5].getWinner()) {
+            setGame(this.ultBoard[3].getWinner());
+        }
+
+        else if (this.ultBoard[6].checkState() == GameState.WINNER && 
+        this.ultBoard[7].checkState() == GameState.WINNER && 
+        this.ultBoard[8].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[6].getWinner() == this.ultBoard[7].getWinner() &&
+        this.ultBoard[6].getWinner() == this.ultBoard[8].getWinner()) {
+            setGame(this.ultBoard[6].getWinner());
+        }
+        
         // Check Diagonal
-        else if (boardWinners[0] == boardWinners[4] && boardWinners[0] == boardWinners[8]) {
-            return boardWinners[0];
+        else if (this.ultBoard[0].checkState() == GameState.WINNER && 
+        this.ultBoard[4].checkState() == GameState.WINNER && 
+        this.ultBoard[8].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[0].getWinner() == this.ultBoard[4].getWinner() &&
+        this.ultBoard[0].getWinner() == this.ultBoard[8].getWinner()) {
+            setGame(this.ultBoard[0].getWinner());
         }
-        
-        else if (boardWinners[2] == boardWinners[4] && boardWinners[2] == boardWinners[6]) {
-            return boardWinners[2];
+
+        else if (this.ultBoard[2].checkState() == GameState.WINNER && 
+        this.ultBoard[4].checkState() == GameState.WINNER && 
+        this.ultBoard[6].checkState() == GameState.WINNER
+        && 
+        this.ultBoard[2].getWinner() == this.ultBoard[4].getWinner() &&
+        this.ultBoard[2].getWinner() == this.ultBoard[6].getWinner()) {
+            setGame(this.ultBoard[2].getWinner());
         };
-        
-        return 'N';
+
+        // Check Tie
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (this.ultBoard[i].getCell(j) == ' ') {
+                    return GameState.NONE;
+                };
+            };
+            setGame(null);
+        };
+        return getState();
     };
 };

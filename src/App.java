@@ -1,121 +1,80 @@
 public class App {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Welcome to Ultimate Tic Tac Toe!");
-        UltimateBoard ultimateBoard = new UltimateBoard();
-        char[][] ult = ultimateBoard.board;
-        ultimateBoard.printBoard();
 
-        Actor player1 = new Actor('X');
-        Actor player2 = new Actor('O');
+    // Instantiate Ultimate Board
+    static UltimateBoard ultBoard = new UltimateBoard();
 
-        boolean winner = false;
-        char[] boardWinners = new char[9];
-        for (int i = 0; i < boardWinners.length; i++) {
-            boardWinners[i] = 'N';
+    public static PlayerType getType(String option) {
+        if (option == "1") {
+            return PlayerType.Player;
         };
-
-        while (!winner) {
-            int cell;
-            Board board;
-            while (true) {
-                System.out.println(player1.getPlayer() + "'s Turn");
-                cell = player1.getAction();
-                board = new Board();
-                board.setBoard(ult[cell]);
-                ultimateBoard.setBoard(cell, board.getBoard());
-                if (boardWinners[cell] == 'N') {
-                    break;
-                } else {
-                    System.out.println("Invalid Board #\n");
-                }
-                System.out.println(boardWinners);
-            };
-
-            // Check winner
-            
-            boolean boardWinner = takeTurn(player1, board);
-            if (boardWinner) {
-                boardWinners[cell] = board.getBoard()[cell];
-                cell += 1;
-                System.out.println(player1.getPlayer() + " Wins Board #" + cell);
-            }
-
-            // Check tie
-            if (board.checkTie()) {
-                boardWinners[cell] = 'T';
-                System.out.println("Tie!");
-            };
-
-            char gameWinner = ultimateBoard.checkWin(boardWinners);
-            if (gameWinner != 'N') {
-                winner = true;
-                System.out.println(gameWinner + " Wins!");
-            };
-
-            ultimateBoard.printBoard();
-
-            board = null;
-            while (true) {
-                System.out.println(player2.getPlayer() + "'s Turn");
-                cell = player2.getAction();
-                board = new Board();
-                board.setBoard(ult[cell]);
-                ultimateBoard.setBoard(cell, board.getBoard());
-                if (boardWinners[cell] == 'N') {
-                    break;
-                } else {
-                    System.out.println("Invalid Board #\n");
-                }
-            };
-
-            boardWinner = takeTurn(player2, board);
-            if (boardWinner) {
-                boardWinners[cell] = board.getBoard()[cell];
-                cell += 1;
-                System.out.println(player2.getPlayer() + " Wins Board #" + cell);
-                System.out.println(boardWinners);
-                if (ultimateBoard.checkWin(boardWinners) != 'N') {
-                    break;
-                };
-            };
-
-            if (board.checkTie()) {
-                System.out.println("Tie!");
-            };
-
-            gameWinner = ultimateBoard.checkWin(boardWinners);
-            if (gameWinner != 'N') {
-                winner = true;
-                System.out.println(gameWinner + " Wins!");
-            };
-
-            ultimateBoard.printBoard();
-        };
+        return PlayerType.AI;
     };
 
-    public static boolean takeTurn(Actor player, Board board) {
-        board.printBoard();
+    public static void playerTurn(Actor player) {
 
-        while (true) {
-            try {
-                int cell = player.getAction();
-                if (board.isValid(cell)) {
-                    board.setCell(cell, player.getPlayer());
-                    board.printBoard();
-                    break;
-                } else {
-                    System.out.println("Invalid cell option");
-                    board.printBoard();
-                }
-            }
-            catch (Exception e) {
-                System.out.println("Invalid cell option");
-                board.printBoard();
+        System.out.println("\n" + player.getPlayer() + "'s Turn\n");
+
+        System.out.print("Enter a block number: ");
+        int block = Input.scanner.nextInt();
+
+        while (!ultBoard.isValid(block)) {
+            System.out.println("\nInvalid block position, please try again!");
+            System.out.print("Enter a block number: ");
+            block = Input.scanner.nextInt();
+        };
+        Board currentBlock = ultBoard.getBlock(block);
+
+        System.out.print("Enter a cell number: ");
+        int cell = Input.scanner.nextInt();
+
+ 
+        while (!currentBlock.isValid(cell)) {
+            System.out.println("\nInvalid cell position, please try again!");
+            System.out.print("Enter a cell number: ");
+            cell = Input.scanner.nextInt();
+        }
+        currentBlock.setCell(cell, player.getPlayer());
+        
+        ultBoard.printBoard();
+        ultBoard.checkState();
+
+        for (int i = 0; i < 3; i++) {
+            System.out.println("+---+---+---+");
+            System.out.print("| " + ultBoard.getBlock(i * 3 + 1).getWinner() + 
+            " | " + ultBoard.getBlock(i * 3 + 2).getWinner() + 
+            " | " + ultBoard.getBlock(i * 3 + 3).getWinner() + 
+            " |\n");
+        };
+        System.out.println("+---+---+---+");
+    };
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("\nWelcome to Ultimate Tic Tac Toe!");
+        ultBoard.printBoard();
+
+        System.out.print("Player or AI (1, 2): ");
+        String option = Input.scanner.nextLine();
+        Actor player1 = new Actor('X', getType(option));
+
+        System.out.print("Player or AI (1, 2): ");
+        option = Input.scanner.nextLine();
+        Actor player2 = new Actor('O', getType(option));
+        
+        while (ultBoard.getState() == GameState.NONE) {
+            playerTurn(player1);
+
+            if (ultBoard.getState() != GameState.NONE) {
+                break;
             };
+
+            playerTurn(player2);
         };
-        if (board.checkWin()) {
-            return true;
+
+        if (ultBoard.getState() == GameState.WINNER) {
+                System.out.println(ultBoard.getWinner() + " has won!");
+            } else {
+                System.out.println("The game is tied!");
         };
-        return false;
+        Input.scanner.close();
     };
 };
