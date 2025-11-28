@@ -5,16 +5,6 @@ public class Board {
                             ' ', ' ', ' ',
                             ' ', ' ', ' '};
     
-    // Set board
-    public void setBoard(char[] board) {
-        this.board = board;
-    };
-
-    // Get board
-    public char[] getBoard() {
-        return this.board;
-    };
-    
     // Validate if cell is playable
     public boolean isValid(int cell) {
         if (this.board[cell - 1] == ' ') {
@@ -54,22 +44,44 @@ public class Board {
     private GameState state = GameState.NONE;
     private Players winner = Players.NULL;
 
-    // Set Game and Winner State
-    private void setGame(char current) {
+    // Set game state
+    private void setGame(GameState state) {
+        switch (state) {
+            case WINNER:
+                this.state = GameState.WINNER;
+                break;
+            
+            case TIE:
+                this.state = GameState.TIE;
+                break;
+
+            default:
+                this.state = GameState.NONE;
+                break;
+        };
+    };
+
+    // Set winner state
+    private void setWinner(char current) {
         switch (current) {
             case 'X':
                 this.winner = Players.X;
-                this.state = GameState.WINNER;
+                setGame(GameState.WINNER);
                 break;
             
             case 'O':
                 this.winner = Players.O;
-                this.state = GameState.WINNER;
+                setGame(GameState.WINNER);
+                break;
+
+            case 'T':
+                this.winner = Players.NULL;
+                setGame(GameState.TIE);
                 break;
 
             default:
                 this.winner = Players.NULL;
-                this.state = GameState.TIE;
+                setGame(GameState.NONE);
                 break;
         };
     };
@@ -89,52 +101,53 @@ public class Board {
 
         // Check Horizontal
         if (this.board[0] == this.board[1] && this.board[0] == this.board[2] && this.board[0] != ' ') {
-            setGame(this.board[0]);
+            setWinner(this.board[0]);
         } 
         
         else if (this.board[3] == this.board[4] && this.board[3] == this.board[5] && this.board[3] != ' ') {
-            setGame(this.board[3]);
+            setWinner(this.board[3]);
         }
 
         else if (this.board[6] == this.board[7] && this.board[6] == this.board[8] && this.board[6] != ' ') {
-            setGame(this.board[6]);
+            setWinner(this.board[6]);
         }
 
         // Check Vertical
         else if (this.board[0] == this.board[3] && this.board[0] == this.board[6] && this.board[0] != ' ') {
-            setGame(this.board[0]);
+            setWinner(this.board[0]);
         } 
         
         else if (this.board[1] == this.board[4] && this.board[1] == this.board[7] && this.board[1] != ' ') {
-            setGame(this.board[1]);
+            setWinner(this.board[1]);
         }
 
         else if (this.board[2] == this.board[5] && this.board[2] == this.board[8] && this.board[2] != ' ') {
-            setGame(this.board[2]);
+            setWinner(this.board[2]);
         }
 
         // Check Diagonal
         else if (this.board[0] == this.board[4] && this.board[0] == this.board[8] && this.board[0] != ' ') {
-            setGame(this.board[0]);
+            setWinner(this.board[0]);
         }
 
         else if (this.board[2] == this.board[4] && this.board[2] == this.board[6] && this.board[2] != ' ') {
-            setGame(this.board[2]);
-        };
+            setWinner(this.board[2]);
+        } 
 
         // Check Tie
+        else {
+            boolean isTie = true;
+            for (int i = 0; i < 9; i++) {
+                if (isValid(i + 1)) {
+                    isTie = false;
+                };
+            };
 
-        boolean isTie = true;
-        for (int i = 0; i < 9; i++) {
-            if (this.board[i] == ' ') {
-                isTie = false;
-                return this.state;
+            if (isTie) {
+                setWinner('T');
             };
         };
 
-        if (isTie) {
-            setGame('T');  
-        };
         return getState();
     };
 };

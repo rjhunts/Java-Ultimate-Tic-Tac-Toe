@@ -38,6 +38,7 @@ public class App {
         ultBoard.printBoard();
         ultBoard.checkState();
 
+        System.out.println("\nGame Tracker\n");
         for (int i = 0; i < 3; i++) {
             System.out.println("+---+---+---+");
             System.out.print("| " + ultBoard.getBlock(i * 3 + 1).getWinner() + 
@@ -71,9 +72,9 @@ public class App {
         };
 
         if (ultBoard.getState() == GameState.WINNER) {
-                System.out.println(ultBoard.getWinner() + " has won!");
-            } else {
-                System.out.println("The game is tied!");
+            System.out.println(ultBoard.getWinner() + " has won!");
+        } else {
+            System.out.println("The game is tied!");
         };
         Input.scanner.close();
     };

@@ -1,7 +1,9 @@
 public class UltimateBoard extends Board {
 
+    // Initialize board
     private Board[] ultBoard = new Board[9];
-
+    
+    // Board setup
     public UltimateBoard() {
         for (int i = 0; i < 9; i++) {
             Board board = new Board();
@@ -9,10 +11,7 @@ public class UltimateBoard extends Board {
         };
     };
 
-    public void setBoard(int n, Board b) {
-        this.ultBoard[n] = b;
-    };
-
+    // Get block
     public Board getBlock(int block) {
         return this.ultBoard[block - 1];
     };
@@ -31,45 +30,68 @@ public class UltimateBoard extends Board {
         return false;
     };
 
+    // Print board
     public void printBoard() {
+        System.out.println("\nGame Board\n");
         for (int i = 0; i < 3; i++) {
-            System.out.println("\n+---+---+---+    +---+---+---+    +---+---+---+");
+            System.out.println();
+            System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
             System.out.println(this.ultBoard[i * 3].toString(0) + "    " + this.ultBoard[i * 3 + 1].toString(0) + "    " + this.ultBoard[i * 3 + 2].toString(0));
             System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
             System.out.println(this.ultBoard[i * 3].toString(3) + "    " + this.ultBoard[i * 3 + 1].toString(3) + "    " + this.ultBoard[i * 3 + 2].toString(3));
             System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
             System.out.println(this.ultBoard[i * 3].toString(6) + "    " + this.ultBoard[i * 3 + 1].toString(6) + "    " + this.ultBoard[i * 3 + 2].toString(6));
             System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
-            System.out.println();
         };
+        System.out.println();
     };
     
     private GameState state = GameState.NONE;
     private Players winner;
 
-    private void setGame(Players current) {
-        switch (current) {
-            case X:
-                this.winner = Players.X;
+    // Set game state
+    private void setGame(GameState state) {
+        switch (state) {
+            case WINNER:
                 this.state = GameState.WINNER;
                 break;
             
-            case O:
-                this.winner = Players.O;
-                this.state = GameState.WINNER;
+            case TIE:
+                this.state = GameState.TIE;
                 break;
 
             default:
                 this.winner = Players.NULL;
-                this.state = GameState.TIE;
                 break;
         };
     };
 
+    // Set winner state
+    private void setWinner(Players current) {
+        switch (current) {
+            case X:
+                this.winner = Players.X;
+                setGame(GameState.WINNER);
+                break;
+            
+            case O:
+                this.winner = Players.O;
+                setGame(GameState.WINNER);
+                break;
+                
+            default:
+                this.winner = Players.NULL;
+                setGame(GameState.NONE);
+                break;
+        };
+    };
+
+    // Get winner
     public Players getWinner() {
         return this.winner;
     };
 
+    // Get game state
     public GameState getState() {
         return this.state;
     };
@@ -84,7 +106,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[0].getWinner() == this.ultBoard[3].getWinner() &&
         this.ultBoard[0].getWinner() == this.ultBoard[6].getWinner()){
-            setGame(this.ultBoard[0].getWinner());
+            setWinner(this.ultBoard[0].getWinner());
         }
 
         else if (this.ultBoard[1].checkState() == GameState.WINNER && 
@@ -93,7 +115,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[1].getWinner() == this.ultBoard[4].getWinner() &&
         this.ultBoard[1].getWinner() == this.ultBoard[7].getWinner()){
-            setGame(this.ultBoard[1].getWinner());
+            setWinner(this.ultBoard[1].getWinner());
         }
 
         else if (this.ultBoard[2].checkState() == GameState.WINNER && 
@@ -102,7 +124,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[2].getWinner() == this.ultBoard[5].getWinner() &&
         this.ultBoard[2].getWinner() == this.ultBoard[8].getWinner()) {
-            setGame(this.ultBoard[2].getWinner());
+            setWinner(this.ultBoard[2].getWinner());
         }
 
         // Check Verical
@@ -112,7 +134,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[0].getWinner() == this.ultBoard[1].getWinner() &&
         this.ultBoard[0].getWinner() == this.ultBoard[2].getWinner()) {
-            setGame(this.ultBoard[0].getWinner());
+            setWinner(this.ultBoard[0].getWinner());
         }
 
         else if (this.ultBoard[3].checkState() == GameState.WINNER && 
@@ -121,7 +143,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[3].getWinner() == this.ultBoard[4].getWinner() &&
         this.ultBoard[3].getWinner() == this.ultBoard[5].getWinner()) {
-            setGame(this.ultBoard[3].getWinner());
+            setWinner(this.ultBoard[3].getWinner());
         }
 
         else if (this.ultBoard[6].checkState() == GameState.WINNER && 
@@ -130,7 +152,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[6].getWinner() == this.ultBoard[7].getWinner() &&
         this.ultBoard[6].getWinner() == this.ultBoard[8].getWinner()) {
-            setGame(this.ultBoard[6].getWinner());
+            setWinner(this.ultBoard[6].getWinner());
         }
         
         // Check Diagonal
@@ -140,7 +162,7 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[0].getWinner() == this.ultBoard[4].getWinner() &&
         this.ultBoard[0].getWinner() == this.ultBoard[8].getWinner()) {
-            setGame(this.ultBoard[0].getWinner());
+            setWinner(this.ultBoard[0].getWinner());
         }
 
         else if (this.ultBoard[2].checkState() == GameState.WINNER && 
@@ -149,18 +171,25 @@ public class UltimateBoard extends Board {
         && 
         this.ultBoard[2].getWinner() == this.ultBoard[4].getWinner() &&
         this.ultBoard[2].getWinner() == this.ultBoard[6].getWinner()) {
-            setGame(this.ultBoard[2].getWinner());
-        };
+            setWinner(this.ultBoard[2].getWinner());
+        }
 
         // Check Tie
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (this.ultBoard[i].getCell(j) == ' ') {
-                    return GameState.NONE;
+        else {
+            boolean isTie = true;
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (isValid(j + 1)) {
+                        isTie = false;
+                    };
                 };
             };
-            setGame(null);
+
+            if (isTie) {
+                setGame(GameState.TIE);
+            };
         };
+        
         return getState();
     };
 };
