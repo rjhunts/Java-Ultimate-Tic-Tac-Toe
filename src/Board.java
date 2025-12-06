@@ -92,7 +92,7 @@ public class Board {
     };
 
     // Get game state
-    private GameState getState() {
+    public GameState getState() {
         return this.state;
     };
 

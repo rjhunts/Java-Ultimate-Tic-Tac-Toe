@@ -1,4 +1,4 @@
 public enum PlayerType {
     Player,
-    AI;
+    BOT;
 };

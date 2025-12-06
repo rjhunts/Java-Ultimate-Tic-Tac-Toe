@@ -18,7 +18,7 @@ public class UltimateBoard extends Board {
 
     // Validate if block is playable
     public boolean isValid(int block) {
-        if (this.ultBoard[block - 1].checkState() == GameState.WINNER) {
+        if (this.ultBoard[block - 1].checkState() != GameState.NONE) {
             return false;
         };
 
@@ -32,7 +32,7 @@ public class UltimateBoard extends Board {
 
     // Print board
     public void printBoard() {
-        System.out.println("\nGame Board\n");
+        System.out.println("\nGame Board");
         for (int i = 0; i < 3; i++) {
             System.out.println();
             System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
