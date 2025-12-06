@@ -3,6 +3,8 @@ public class App {
     // Instantiate Ultimate Board
     static UltimateBoard ultBoard;
     
+    private static Integer prevCell = null;
+
     public static PlayerType getType(String option) {
         if ("2".equals(option)) {
             return PlayerType.BOT;
@@ -18,10 +20,12 @@ public class App {
         return board.getWinner().toString().charAt(0);
     };
 
-    public static void setBlock(int block, Actor player) {
+    public static int setBlock(Integer block, Actor player) {
         while (!ultBoard.isValid(block)) {
             if (player.getPlayerType().equals(PlayerType.Player)) {
-                System.out.println("\nInvalid block position, please try again!");
+                if (block != prevCell) {
+                    System.out.println("\nInvalid block position, please try again!");
+                };
                 System.out.print("Enter a block number: ");
                 block = Input.scanner.nextInt();
             } 
@@ -30,9 +34,10 @@ public class App {
                 block = BotHandler.getBlock(player.getDifficulty());
             };
         };
+        return block;
     };
 
-    public static void setCell(Board currentBlock, int cell, Actor player) {
+    public static int setCell(Board currentBlock, int cell, Actor player) {
         while (!currentBlock.isValid(cell)) {
             if (currentBlock.getState() != GameState.NONE) {
                 currentBlock = ultBoard.getBlock(BotHandler.getBlock(player.getDifficulty()));
@@ -48,6 +53,8 @@ public class App {
                 cell = BotHandler.getCell(player.getDifficulty());
             };
         };
+        prevCell = cell;
+        return cell;
     };
 
     public static void playerTurn(Actor player) {
@@ -55,29 +62,27 @@ public class App {
         System.out.println("\n" + player.getPlayer() + "'s Turn\n");
 
         if (player.getPlayerType() == PlayerType.Player) {
-            System.out.print("Enter a block number: ");
-            int block = Input.scanner.nextInt();
-            setBlock(block, player);
+
+            int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
             System.out.print("Enter a cell number: ");
             int cell = Input.scanner.nextInt();
 
-            setCell(currentBlock, cell, player);
-            currentBlock.setCell(cell, player.getPlayer());
+            int currentCell = setCell(currentBlock, cell, player);
+            currentBlock.setCell(currentCell, player.getPlayer());
         }
 
         else {
             Difficulty difficulty = player.getDifficulty();
-            int block = BotHandler.getBlock(difficulty);
-            setBlock(block, player);
-            //System.out.println(block);
+            int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
             int cell = BotHandler.getCell(difficulty);
-            //System.out.println(cell);
             setCell(currentBlock, cell, player);
-            currentBlock.setCell(cell, player.getPlayer());
+
+            int currentCell = setCell(currentBlock, cell, player);
+            currentBlock.setCell(currentCell, player.getPlayer());
         };
         
         ultBoard.printBoard();
