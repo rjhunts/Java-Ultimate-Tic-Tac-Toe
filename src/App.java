@@ -62,7 +62,6 @@ public class App {
         System.out.println("\n" + player.getPlayer() + "'s Turn\n");
 
         if (player.getPlayerType() == PlayerType.Player) {
-
             int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
@@ -79,7 +78,6 @@ public class App {
             Board currentBlock = ultBoard.getBlock(block);
 
             int cell = BotHandler.getCell(difficulty);
-            setCell(currentBlock, cell, player);
 
             int currentCell = setCell(currentBlock, cell, player);
             currentBlock.setCell(currentCell, player.getPlayer());
