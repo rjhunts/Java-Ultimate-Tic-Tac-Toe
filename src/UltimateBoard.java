@@ -17,8 +17,8 @@ public class UltimateBoard extends Board {
     };
 
     // Validate if block is playable
-    public boolean isValid(int block) {
-        if (this.ultBoard[block - 1].checkState() != GameState.NONE) {
+    public boolean isValid(Integer block) {
+        if (block == null || this.ultBoard[block - 1].checkState() != GameState.NONE) {
             return false;
         };
 
@@ -178,10 +178,8 @@ public class UltimateBoard extends Board {
         else {
             boolean isTie = true;
             for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (isValid(j + 1)) {
-                        isTie = false;
-                    };
+                if (GameState.NONE.equals(ultBoard[i].checkState())) {
+                    isTie = false;
                 };
             };
 

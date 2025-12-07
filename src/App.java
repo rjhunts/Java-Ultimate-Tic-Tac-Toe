@@ -50,7 +50,7 @@ public class App {
             }
 
             else {
-                cell = BotHandler.getCell(player.getDifficulty());
+                cell = BotHandler.getCell(player.getDifficulty(), currentBlock);
             };
         };
         prevCell = cell;
@@ -77,7 +77,7 @@ public class App {
             int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
-            int cell = BotHandler.getCell(difficulty);
+            int cell = BotHandler.getCell(difficulty, currentBlock);
 
             int currentCell = setCell(currentBlock, cell, player);
             currentBlock.setCell(currentCell, player.getPlayer());
