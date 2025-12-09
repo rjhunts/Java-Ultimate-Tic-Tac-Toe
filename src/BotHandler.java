@@ -50,6 +50,9 @@ public class BotHandler {
                 } else {
                     board.setCell(i, ' ');
                 };
+            };
+
+            for (int i = 1; i <= 9; i++) {
 
                 // Otherwise prevent opponent from possibly winning a cell
                 if (board.isValid(i)) {
@@ -66,7 +69,7 @@ public class BotHandler {
                 } else {
                     board.setCell(i, ' ');
                 };
-            };
+            }
         };
 
         // Otherwise assumes difficulty is set to Easy
