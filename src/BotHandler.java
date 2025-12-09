@@ -9,6 +9,12 @@ public class BotHandler {
     };
 
     public static int getCell(Actor player, Board currentBlock) {
+
+        /** Bots currently only have Easy and Normal difficulty
+         *  Was gonna add Hard as well but requires me to implement
+         *  Minimax algorithm, might add later
+         */
+
         if (Difficulty.NORMAL == player.getDifficulty()) {
 
             Board board = new Board();
@@ -29,7 +35,7 @@ public class BotHandler {
 
             for (int i = 1; i <= 9; i++) {
 
-                // Check if winning cell
+                // Check for a winning cell
                 if (board.isValid(i)) {
                     board.setCell(i, player1);
                 } else {
@@ -37,7 +43,7 @@ public class BotHandler {
                 };
 
                 board.checkState();
-                board.printBoard();
+                //board.printBoard();
                 if (player.getPlayerEnum() == board.getWinner()) {
                     //System.out.println("Placed a winning move");
                     return i;
@@ -45,7 +51,7 @@ public class BotHandler {
                     board.setCell(i, ' ');
                 };
 
-                // Prevent opponent from winning
+                // Otherwise prevent opponent from possibly winning a cell
                 if (board.isValid(i)) {
                     board.setCell(i, player2);
                 } else {
@@ -53,7 +59,7 @@ public class BotHandler {
                 };
 
                 board.checkState();
-                board.printBoard();
+                //board.printBoard();
                 if (player2Enum == board.getWinner()) {
                     //System.out.println("Blocked " + player2 + " from winning");
                     return i;
@@ -62,6 +68,8 @@ public class BotHandler {
                 };
             };
         };
+
+        // Otherwise assumes difficulty is set to Easy
         return random.nextInt(1, 10);
     };
 };
