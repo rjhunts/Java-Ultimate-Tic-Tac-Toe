@@ -3,7 +3,7 @@ public class App {
     // Instantiate Ultimate Board
     static UltimateBoard ultBoard;
     
-    private static Integer prevCell = null;
+    public static Integer prevCell = null;
 
     public static PlayerType getType(String option) {
         if ("2".equals(option)) {
@@ -26,12 +26,21 @@ public class App {
                 if (block != prevCell) {
                     System.out.println("\nInvalid block position, please try again!");
                 };
-                System.out.print("Enter a block number: ");
-                block = Input.scanner.nextInt();
-            } 
+                boolean validInput = false;
+                while (!validInput) {
+                    System.out.print("Enter a block number: ");
+                    try {
+                        block = Input.scanner.nextInt();
+                        validInput = true;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input, please enter a number!\n");
+                        Input.scanner.nextLine();    
+                    };
+                };
+            }
             
             else {
-                block = BotHandler.getBlock(player.getDifficulty());
+                block = BotHandler.getBlock(player, ultBoard);
             };
         };
         return block;
@@ -40,17 +49,26 @@ public class App {
     public static int setCell(Board currentBlock, int cell, Actor player) {
         while (!currentBlock.isValid(cell)) {
             if (currentBlock.getState() != GameState.NONE) {
-                currentBlock = ultBoard.getBlock(BotHandler.getBlock(player.getDifficulty()));
+                currentBlock = ultBoard.getBlock(BotHandler.getBlock(player, ultBoard));
             };
 
             if (player.getPlayerType().equals(PlayerType.Player)) {
                 System.out.println("\nInvalid cell position, please try again!");
-                System.out.print("Enter a cell number: ");
-                cell = Input.scanner.nextInt();
+                boolean validInput = false;
+                while (!validInput) {
+                    System.out.print("Enter a cell number: ");
+                    try {
+                        cell = Input.scanner.nextInt();
+                        validInput = true;
+                    } catch (Exception e) {
+                        System.out.println("Invalid input, please enter a number!\n");
+                        Input.scanner.nextLine();    
+                    };
+                };
             }
 
             else {
-                cell = BotHandler.getCell(player.getDifficulty(), currentBlock);
+                cell = BotHandler.getCell(player, currentBlock);
             };
         };
         prevCell = cell;
@@ -65,19 +83,28 @@ public class App {
             int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
-            System.out.print("Enter a cell number: ");
-            int cell = Input.scanner.nextInt();
+            int cell = 0;
+            boolean validInput = false;
+            while (!validInput) {
+                System.out.print("Enter a cell number: ");
+                try {
+                    cell = Input.scanner.nextInt();
+                    validInput = true;
+                } catch (Exception e) {
+                    System.out.println("Invalid input, please enter a number!\n");
+                    Input.scanner.nextLine();    
+                };
+            };
 
             int currentCell = setCell(currentBlock, cell, player);
             currentBlock.setCell(currentCell, player.getPlayer());
         }
 
         else {
-            Difficulty difficulty = player.getDifficulty();
             int block = setBlock(prevCell, player);
             Board currentBlock = ultBoard.getBlock(block);
 
-            int cell = BotHandler.getCell(difficulty, currentBlock);
+            int cell = BotHandler.getCell(player, currentBlock);
 
             int currentCell = setCell(currentBlock, cell, player);
             currentBlock.setCell(currentCell, player.getPlayer());
@@ -99,7 +126,8 @@ public class App {
     };
 
     public static void main(String[] args) throws Exception {
-        System.out.println("\nWelcome to Ultimate Tic Tac Toe!");
+        prevCell = null;
+        System.out.println("\nWelcome to Ultimate Tic Tac Toe!\n");
         ultBoard = new UltimateBoard();
         ultBoard.printBoard();
 

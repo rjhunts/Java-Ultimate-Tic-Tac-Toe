@@ -9,15 +9,11 @@ public class Actor {
     };
 
     public void initializeBot() {
-        System.out.print("Enter bot difficulty: (1, 2, 3): ");
+        System.out.print("Enter bot difficulty, Easy or Normal (1, 2): ");
         String getDifficulty = Input.scanner.nextLine();
         switch (getDifficulty) {
             case "2":
-                difficulty = Difficulty.EASY;
-                break;
-
-            case "3":
-                difficulty = Difficulty.HARD;
+                difficulty = Difficulty.NORMAL;
                 break;
 
             default:
@@ -32,6 +28,13 @@ public class Actor {
     
     public char getPlayer() {
         return player;
+    };
+
+    public Players getPlayerEnum() {
+        if (getPlayer() == 'X') {
+            return Players.X;
+        }
+        return Players.O;
     };
 
     public PlayerType getPlayerType() {

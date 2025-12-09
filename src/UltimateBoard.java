@@ -32,7 +32,7 @@ public class UltimateBoard extends Board {
 
     // Print board
     public void printBoard() {
-        System.out.println("\nGame Board");
+        System.out.println("Game Board");
         for (int i = 0; i < 3; i++) {
             System.out.println();
             System.out.println("+---+---+---+    +---+---+---+    +---+---+---+");
